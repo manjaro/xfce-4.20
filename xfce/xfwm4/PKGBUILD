@@ -1,0 +1,44 @@
+# Maintainer: Evangelos Foutras <foutrelis@archlinux.org>
+# Maintainer: Robin Candau <antiz@archlinux.org>
+# Contributor: tobias <tobias funnychar archlinux.org>
+
+pkgname=xfwm4
+pkgver=4.19.1
+pkgrel=1
+pkgdesc="Xfce's window manager"
+arch=('x86_64')
+url="https://docs.xfce.org/xfce/xfwm4/start"
+license=('GPL-2.0-or-later')
+groups=('xfce4')
+depends=('libxfce4ui' 'xfconf' 'libwnck3' 'libepoxy' 'libxpresent'
+         'hicolor-icon-theme')
+makedepends=('git' 'intltool' 'xfce4-dev-tools')
+source=("git+https://gitlab.xfce.org/xfce/xfwm4.git#tag=$pkgname-$pkgver")
+sha256sums=('f78a2d8e98643c2c4e84bd34815b846e18b97e30f77d1eb7b44445751a70b559')
+
+prepare() {
+  cd $pkgname
+  NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+  cd $pkgname
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --enable-startup-notification \
+    --enable-randr \
+    --enable-compositor \
+    --enable-xsync \
+    --disable-debug \
+    --enable-maintainer-mode
+  make
+}
+
+package() {
+  cd $pkgname
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:

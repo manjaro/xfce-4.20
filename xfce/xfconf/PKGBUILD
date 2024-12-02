@@ -1,0 +1,39 @@
+# Maintainer: Evangelos Foutras <foutrelis@archlinux.org>
+# Maintainer: Robin Candau <antiz@archlinux.org>
+# Contributor: tobias <tobias funnychar archlinux.org>
+
+pkgname=xfconf
+pkgver=4.19.5
+pkgrel=1
+pkgdesc="D-Bus-based configuration storage system"
+arch=('x86_64')
+url="https://docs.xfce.org/xfce/xfconf/start"
+license=('GPL-2.0-or-later')
+groups=('xfce4')
+depends=('libxfce4util')
+makedepends=('git' 'glib2-devel' 'intltool' 'gobject-introspection' 'vala' 'xfce4-dev-tools')
+source=("git+https://gitlab.xfce.org/xfce/xfconf.git#tag=$pkgname-$pkgver")
+sha256sums=('d69caab4f3bcfbaecbdd9b1753900946a811b82daa917319fbe13523b6ec5ed8')
+
+prepare() {
+  cd $pkgname
+  NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+  cd $pkgname
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --enable-gtk-doc \
+    --disable-debug
+  make
+}
+
+package() {
+  cd $pkgname
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:

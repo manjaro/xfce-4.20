@@ -1,0 +1,42 @@
+# Maintainer: Evangelos Foutras <foutrelis@archlinux.org>
+# Maintainer: Robin Candau <antiz@archlinux.org>
+# Contributor: Tobias Kieslich <tobias funnychar archlinux.org>
+
+pkgname=xfce4-power-manager
+pkgver=4.19.5
+pkgrel=1
+pkgdesc="Power Manager for Xfce"
+arch=('x86_64')
+url="https://docs.xfce.org/xfce/xfce4-power-manager/start"
+license=('GPL-2.0-or-later')
+groups=('xfce4')
+depends=('libxfce4ui' 'upower' 'libnotify' 'xfce4-notifyd' 'hicolor-icon-theme')
+makedepends=('git' 'glib2-devel' 'intltool' 'xfce4-dev-tools' 'xfce4-panel' 'wayland')
+source=("git+https://gitlab.xfce.org/xfce/xfce4-power-manager.git#tag=$pkgname-$pkgver")
+sha256sums=('704ef7c6833b0a1947c66ddf8711f7690f96a69bfeaf16418a7e03fa864d4c56')
+
+prepare() {
+  cd $pkgname
+  NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+  cd $pkgname
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --sbindir=/usr/bin \
+    --localstatedir=/var \
+    --disable-network-manager \
+    --enable-polkit \
+    --disable-debug \
+    --enable-maintainer-mode
+  make
+}
+
+package() {
+  cd $pkgname
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:
